@@ -1,4 +1,4 @@
-<p align="center"><a href="https://simplachat.fr"><img src="https://raw.githubusercontent.com/simplachat/simplachat/main/public/images/logo.png" alt="Simpl'Achat Logo" height="200px"></a></p>
+<p align="center"><a href="https://simplachat.fr"><img src="https://github.com/simplachat/simplachat/blob/main/public/images/logo.png" alt="Simpl'Achat Logo" height="200px"></a></p>
 
 <p align="center">
 <a href="https://travis-ci.org/laravel/framework"><img src="https://img.shields.io/github/languages/code-size/simplachat/simplachat" alt="Codebase size"></a>
