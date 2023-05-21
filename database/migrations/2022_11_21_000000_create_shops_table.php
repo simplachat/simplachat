@@ -13,23 +13,31 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('shops', function (Blueprint $table) {
             $table->id();
 
-			// name, surname, email, password, phone
-            $table->string('name');
-            $table->string('surname');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('phone')->nullable();
+			// name, slug, phone, email, password
+            $table->string('name', 255)->unique();
+            $table->string('slug', 255)->unique();
+            $table->string('phone', 255);
+            $table->string('email', 255)->unique();
+			$table->string('password');
+
+			// description, image
+			$table->text('description');
+            $table->text('image');
+
+			// address, city, postalCode
+			$table->text('address');
+            $table->string('city', 255);
+            $table->string('postalCode', 5);
 
 			// is_banned, is_verified
             $table->boolean('is_banned')->default(false);
             $table->boolean('is_verified')->default(false);
 
 			// remember_token
-            $table->rememberToken();
+			$table->rememberToken();
 
 			// timestamps
             $table->timestamps();
@@ -43,6 +51,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('shops');
     }
 };
