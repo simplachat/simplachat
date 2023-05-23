@@ -35,48 +35,90 @@ class ProductController extends Controller
     public function index(): ResourceCollection
     {
         $products = Product::query()
+            /**
+             * Randomize the results if parameter "random" is set
+             */
             ->when(request()->has('random'), function ($query) {
                 $query->inRandomOrder()->take(request('random'));
             })
+            /**
+             * Filter by category if parameter "categories" is set
+             */
             ->when(request()->has('categories'), function ($query) {
                 $query->whereHas('category', function ($query) {
                     $query->whereIn('category_id', request('categories'));
                 });
             })
+            /**
+             * Filter by shop if parameter "shops" is set
+             */
             ->when(request()->has('shops'), function ($query) {
                 $query->whereHas('shop', function ($query) {
                     $query->whereIn('shop_id', request('shops'));
                 });
             })
+            /**
+             * Filter by discounted products if parameter "discount" is set
+             * We filter based on discount_price for prices
+             */
             ->when(request()->has('discount'), function ($query) {
+                /**
+                 * Filter by min_price if parameter "min_price" is set
+                 */
                 $query->when(request()->has('min_price'), function ($query) {
                     $query->when(request()->has('max_price'), function ($query) {
+                        /**
+                         * Filter by price between min_price and max_price if parameter "max_price" is set and "min_price" is set
+                         */
                         $query->whereBetween('discount_price', [request('min_price'), request('max_price')]);
                     }, function ($query) {
                         $query->where('discount_price', '>=', request('min_price'));
                     });
                 });
+                /**
+                 * Filter by max_price if parameter "max_price" is set
+                 */
                 $query->when(request()->has('max_price'), function ($query) {
                     $query->where('discount_price', '<=', request('max_price'));
                 });
             }, function ($query) {
+                /**
+                 * If discount parameter is not set, we filter based on unit_price for prices
+                 *
+                 * Filter by min_price if parameter "min_price" is set
+                 */
                 $query->when(request()->has('min_price'), function ($query) {
                     $query->when(request()->has('max_price'), function ($query) {
+                        /**
+                         * Filter by price between min_price and max_price if parameter "max_price" is set and "min_price" is set
+                         */
                         $query->whereBetween('unit_price', [request('min_price'), request('max_price')]);
                     }, function ($query) {
                         $query->where('unit_price', '>=', request('min_price'));
                     });
                 });
+                /**
+                 * Filter by max_price if parameter "max_price" is set
+                 */
                 $query->when(request()->has('max_price'), function ($query) {
                     $query->where('unit_price', '<=', request('max_price'));
                 });
             })
+            /**
+             * Filter by name if parameter "search" is set
+             */
             ->when(request()->has('search'), function ($query) {
                 $query->where('name', 'like', '%' . request('search') . '%');
             })
+            /**
+             * Sort by parameter "sort" if set and "order" if set
+             */
             ->when(request()->has('sort'), function ($query) {
                 $query->orderBy(request('sort'), request('order', 'asc'));
             });
+        /**
+         * Paginate the results if parameter "paginate" is set
+         */
         if (request()->has('paginate')) {
             return ProductResource::collection($products->paginate(request('paginate')));
         }
