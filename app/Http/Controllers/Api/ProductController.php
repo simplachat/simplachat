@@ -7,13 +7,32 @@ use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use LogicException;
 
+/**
+ * Contrôleur de ressources pour les produits.
+ * Permet de récupérer, créer, mettre à jour et supprimer des produits.
+ *
+ * @author Quentin Boitel <quentin.boitel@simplachat.fr>
+ * @package API\Controllers
+ * @since 2023-05-21
+ * @version 1.0.0
+ * @license MIT
+ * @see Product
+ */
 class ProductController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Renvoie la liste des produits correspondant aux critères de recherche.
+     *
+     * @return ResourceCollection La collection de ressources ProductResource contenant les produits correspondant aux critères de recherche.
+     *
+     * @author Quentin Boitel <quentin.boitel@simplachat.fr>
+     * @since 2023-05-21
+     * @version 1.0.0
      */
-    public function index()
+    public function index(): ResourceCollection
     {
         $products = Product::query()
             ->when(request()->has('random'), function ($query) {
@@ -65,34 +84,71 @@ class ProductController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Renvoie le produit créé à partir des données de la requête.
+     *
+     * @param StoreProductRequest $request La requête de validation de produit
+     * @return Product Le produit créé
+     *
+     * @author Quentin Boitel <quentin.boitel@simplachat.fr>
+     * @since 2023-05-21
+     * @version 1.0.0
+     * @see StoreProductRequest
+     * @see Product
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request): Product
     {
         return Product::create(['shop_id' => auth()->user()->id, ...$request->validated()]);
     }
 
     /**
-     * Display the specified resource.
+     * Renvoie le produit correspondant à l'identifiant.
+     *
+     * @param Product $product Le produit à afficher
+     * @return ProductResource La ressource ProductResource contenant le produit demandé
+     *
+     * @author Quentin Boitel <quentin.boitel@simplachat.fr>
+     * @since 2023-05-21
+     * @version 1.0.0
+     * @see Product
+     * @see ProductResource
      */
-    public function show(Product $product)
+    public function show(Product $product): ProductResource
     {
-        return new ProductResource($product);
+        return ProductResource::make($product);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Met à jour le produit correspondant à l'identifiant avec les données de la requête.
+     *
+     * @param UpdateProductRequest $request La requête de mise à jour du produit
+     * @param Product $product Le produit à mettre à jour
+     * @return bool true si la mise à jour a réussi, false sinon
+     *
+     * @author Quentin Boitel <quentin.boitel@simplachat.fr>
+     * @since 2023-05-21
+     * @version 1.0.0
+     * @see UpdateProductRequest
+     * @see Product
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product): bool
     {
-        $product->update(['shop_id' => auth()->user()->id, ...$request->validated()]);
-        return true;
+        return $product->update(['shop_id' => auth()->user()->id, ...$request->validated()]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprime le produit correspondant à l'identifiant.
+     *
+     * @param Product $product Le produit à supprimer
+     * @return bool|null true si la suppression a réussi, false sinon ou null si le produit n'existe pas
+     *
+     * @throws LogicException Si l'utilisateur n'est pas le propriétaire du produit
+     *
+     * @author Quentin Boitel <quentin.boitel@simplachat.fr>
+     * @since 2023-05-21
+     * @version 1.0.0
+     * @see Product
      */
-    public function destroy(Product $product)
+    public function destroy(Product $product): bool|null
     {
         return $product->delete();
     }
