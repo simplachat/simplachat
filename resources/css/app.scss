@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[target=_blank]:after {
+    content: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJoLTUgdy01IiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CiAgPHBhdGggZD0iTTExIDNhMSAxIDAgMTAwIDJoMi41ODZsLTYuMjkzIDYuMjkzYTEgMSAwIDEwMS40MTQgMS40MTRMMTUgNi40MTRWOWExIDEgMCAxMDIgMFY0YTEgMSAwIDAwLTEtMWgtNXoiIC8+CiAgPHBhdGggZD0iTTUgNWEyIDIgMCAwMC0yIDJ2OGEyIDIgMCAwMDIgMmg4YTIgMiAwIDAwMi0ydi0zYTEgMSAwIDEwLTIgMHYzSDVWN2gzYTEgMSAwIDAwMC0ySDV6IiAvPgo8L3N2Zz4=);
+    display: inline-block;
+    margin-left: 0.25rem;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+    -webkit-mask-size: 100% 100%;
+    vertical-align: calc((0.75em - 20px)*.5);
+
+    @apply stroke-gray-900;
+}

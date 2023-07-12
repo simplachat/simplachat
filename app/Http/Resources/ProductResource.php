@@ -18,7 +18,7 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'description' => substr($this->description, 0, 100) . '...',
+            'description' => substr($this->description, 0, 250) . '...',
             'category' => CategoryResource::make($this->whenLoaded('category')),
             'shop' => ShopResource::make($this->whenLoaded('shop')),
             'unit_price' => $this->unit_price,
